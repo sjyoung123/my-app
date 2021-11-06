@@ -1,20 +1,30 @@
 import { useState, useEffect } from "react";
-import Button from "./Button";
-import Input from "./Input";
 
-function App() {
-  const [count, setCount] = useState(0);
-  const onClick = () => setCount((prev) => prev + 1);
+function Hello() {
+  // const byeFunc = () => {
+  //   console.log("Bye :(");
+  // };
+  // const hiFunc = () => {
+  //   console.log("Hi :)");
+  //   return byeFunc; //cleanup func
+  // };
+  // useEffect(hiFunc, []);
 
   useEffect(() => {
-    console.log("render only once");
+    console.log("hi:)");
+    return () => console.log("bye:("); //cleanup func
   }, []);
 
+  return <h1>Hello</h1>;
+}
+
+function App() {
+  const [showing, setShowing] = useState(false);
+  const onClick = () => setShowing((prev) => !prev);
   return (
     <div>
-      <h1>{count}</h1>
-      <Button onClick={onClick} text="Click Me!" />
-      <Input />
+      {showing ? <Hello /> : null}
+      <button onClick={onClick}>{showing ? "hide" : "show"}</button>
     </div>
   );
 }
