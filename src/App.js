@@ -1,37 +1,61 @@
-import { string } from "prop-types";
 import { useState, useEffect } from "react";
 
 function App() {
-  const [toDo, setToDo] = useState("");
-  const [toDos, setToDos] = useState([]);
-  const onChange = (event) => setToDo(event.target.value);
-  const onSubmit = (event) => {
-    event.preventDefault();
-    if (!toDo) {
-      return;
+  const [loading, setLoading] = useState(true);
+  const [coins, setCoins] = useState();
+  const [coinIndex, setCoinIndex] = useState(0);
+  const [changeWon, setChangeWon] = useState(0);
+  const dallorWon = 1200;
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch("https://api.coinpaprika.com/v1/tickers");
+      const json = await response.json();
+      setCoins(json.slice(0, 10));
+      setLoading(false);
     }
-    setToDos((prevArray) => [...prevArray, toDo]); //[toDo].concat(prevArray)
-    setToDo("");
+    fetchData();
+  }, []);
+  const changeCoin = (event) => {
+    const {
+      target: {
+        options: { selectedIndex },
+      },
+    } = event;
+    setCoinIndex(selectedIndex);
   };
-  const deleteList = (event) => {
-    const li = event.target.parentElement;
-    setToDos(() => toDos.filter((item) => item !== li.className));
+  const changeInput = (event) => {
+    const {
+      target: { value },
+    } = event;
+    const coinCash = Number(value);
+    setChangeWon(coinCash);
   };
   return (
     <div>
-      <h1>My To-Do List({toDos.length})</h1>
-      <form onSubmit={onSubmit}>
-        <input onChange={onChange} value={toDo} type="text"></input>
-        <button>Click</button>
-      </form>
-      <ul>
-        {toDos.map((item, index) => (
-          <li key={index} id={index} className={item}>
-            {item}
-            <span onClick={deleteList}>❌</span>
-          </li>
-        ))}
-      </ul>
+      <h1>The Coins! {loading ? "" : `(${coins.length})`}</h1>
+      {loading ? (
+        <strong>Loading...</strong>
+      ) : (
+        <select onChange={changeCoin}>
+          {coins.map((coin) => (
+            <option key={coin.id}>
+              {coin.name} ({coin.symbol}): ${coin.quotes.USD.price} USD
+            </option>
+          ))}
+        </select>
+      )}
+      <div>
+        <input type="number" onChange={changeInput} min="0"></input>
+        <span>{coins[coinIndex].symbol}</span>
+      </div>
+      <div>
+        <input
+          type="number"
+          value={changeWon * coins[coinIndex].quotes.USD.price * dallorWon}
+          disabled
+        ></input>
+        <span>won</span>
+      </div>
     </div>
   );
 }
