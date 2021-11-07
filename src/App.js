@@ -1,61 +1,43 @@
 import { useState, useEffect } from "react";
 
 function App() {
+  const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [coins, setCoins] = useState();
-  const [coinIndex, setCoinIndex] = useState(0);
-  const [changeWon, setChangeWon] = useState(0);
-  const dallorWon = 1200;
+
+  const getMovie = async () => {
+    const json = await (
+      await fetch(
+        "https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year"
+      )
+    ).json();
+    setMovies(json.data.movies);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    async function fetchData() {
-      const response = await fetch("https://api.coinpaprika.com/v1/tickers");
-      const json = await response.json();
-      setCoins(json.slice(0, 10));
-      setLoading(false);
-    }
-    fetchData();
+    getMovie();
   }, []);
-  const changeCoin = (event) => {
-    const {
-      target: {
-        options: { selectedIndex },
-      },
-    } = event;
-    setCoinIndex(selectedIndex);
-  };
-  const changeInput = (event) => {
-    const {
-      target: { value },
-    } = event;
-    const coinCash = Number(value);
-    setChangeWon(coinCash);
-  };
+
   return (
     <div>
-      <h1>The Coins! {loading ? "" : `(${coins.length})`}</h1>
       {loading ? (
-        <strong>Loading...</strong>
+        <h1>Loading...</h1>
       ) : (
-        <select onChange={changeCoin}>
-          {coins.map((coin) => (
-            <option key={coin.id}>
-              {coin.name} ({coin.symbol}): ${coin.quotes.USD.price} USD
-            </option>
+        <div>
+          {movies.map((movie) => (
+            <div key={movie.id}>
+              <img src={movie.medium_cover_image} />
+              <h2>{movie.title}</h2>
+              <p>{movie.summary}</p>
+              <ul>
+                {movie.genres.map((g) => (
+                  <li key={g}>{g}</li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </select>
+        </div>
       )}
-      <div>
-        <input type="number" onChange={changeInput} min="0"></input>
-        <span>{coins[coinIndex].symbol}</span>
-      </div>
-      <div>
-        <input
-          type="number"
-          value={changeWon * coins[coinIndex].quotes.USD.price * dallorWon}
-          disabled
-        ></input>
-        <span>won</span>
-      </div>
     </div>
   );
 }
