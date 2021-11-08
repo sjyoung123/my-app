@@ -1,0 +1,18 @@
+.detail__container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+.container__explain {
+  margin-left: 30px;
+  max-width: 570px;
+}
+.container__description {
+  font-size: 22px;
+}
+.rating__div {
+  margin-top: 30px;
+}
+.runtime__div {
+  margin-top: 20px;
+}

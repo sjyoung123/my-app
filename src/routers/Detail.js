@@ -1,3 +1,4 @@
+import styles from "./Detail.module.css";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -20,24 +21,28 @@ function Detail() {
 
   console.log(movieDetail);
   return (
-    <div>
+    <div className={styles.detail__container}>
       {loading ? (
         <h1>Loading...</h1>
       ) : (
-        <div>
-          <h1>{movieDetail.title_long}</h1>
+        <div className={styles.detail__container}>
           <img
             src={movieDetail.large_cover_image}
             alt={movieDetail.title_long}
           />
-          <div>
-            <span>{movieDetail.description_full}</span>
-          </div>
-          <div>
-            <span>Rating: {movieDetail.rating}</span>
-          </div>
-          <div>
-            <span>Run-time: {movieDetail.runtime}min.</span>
+          <div className={styles.container__explain}>
+            <h1>{movieDetail.title_long}</h1>
+            <div>
+              <span className={styles.container__description}>
+                {movieDetail.description_full}
+              </span>
+            </div>
+            <div className={styles.rating__div}>
+              <span>Rating: {movieDetail.rating}/10</span>
+            </div>
+            <div className={styles.runtime__div}>
+              <span>Run-time: {movieDetail.runtime}min.</span>
+            </div>
           </div>
         </div>
       )}

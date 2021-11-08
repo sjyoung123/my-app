@@ -1,3 +1,4 @@
+import styles from "./Home.module.css";
 import { useEffect, useState } from "react";
 import Movie from "../components/Movie";
 
@@ -20,14 +21,15 @@ function Home() {
   }, []);
 
   return (
-    <div>
+    <div className={styles.container}>
       {loading ? (
         <h1>Loading...</h1>
       ) : (
-        <div>
+        <div className={styles.movies}>
           {movies.map((movie) => (
             <Movie
               id={movie.id}
+              year={movie.year}
               key={movie.id}
               coverImg={movie.medium_cover_image}
               title={movie.title}
